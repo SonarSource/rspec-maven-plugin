@@ -59,7 +59,6 @@ public class RuleDataGenerator {
         .toList();
 
       manifest.add("defaultQualityProfiles", serializer.toJsonTree(qualityProfiles));
-
       this.fileSystem.write(manifestFile, serializer.toJson(manifest));
     }
   }
