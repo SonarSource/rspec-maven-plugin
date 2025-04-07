@@ -1,0 +1,33 @@
+# Maven
+target/
+bin/
+
+# IntelliJ IDEA
+*.iws
+*.iml
+*.ipr
+.idea/
+
+# Eclipse
+.classpath
+.project
+.settings
+
+# Visual Studio
+.vs/
+
+# VS Code
+.vscode/
+
+# ---- Mac OS X
+.DS_Store
+
+# ---- Windows
+# Windows image file caches
+Thumbs.db
+# Folder config file
+Desktop.ini
+
+# ---- Sonar
+.sonar
+.scannerwork

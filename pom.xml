@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonarsource.parent</groupId>
+        <artifactId>parent</artifactId>
+        <version>83.0.0.2369</version>
+    </parent>
+
+    <groupId>org.sonarsource.rspec</groupId>
+    <artifactId>rspec-maven</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <description>Maven plugin to populate rspec rule metadata</description>
+    <inceptionYear>2025</inceptionYear>
+
+    <properties>
+        <revision>1.0.0-SNAPSHOT</revision>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>GNU LGPL 3</name>
+            <url>http://www.gnu.org/licenses/lgpl.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <modules>
+        <module>rspec-maven-plugin</module>
+    </modules>
+
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>rspec-maven-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

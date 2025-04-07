@@ -14,14 +14,13 @@ build_task:
     cpu: 1
     memory: 1G
   env:
-    # Possible values for ARTIFACTORY_DEPLOY_REPO: sonarsource-private-qa, sonarsource-public-qa
-    ARTIFACTORY_DEPLOY_REPO: FIXME
+    ARTIFACTORY_DEPLOY_REPO: sonarsource-public-qa
     ARTIFACTORY_DEPLOY_USERNAME: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-qa-deployer username]
     ARTIFACTORY_DEPLOY_PASSWORD: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-qa-deployer access_token]
     DEPLOY_PULL_REQUEST: "true"
   build_script:
     - source cirrus-env BUILD
-    - regular_build_...
+    - regular_mvn_build_deploy_analyze -DartifactoryToken=$ARTIFACTORY_ACCESS_TOKEN
 
 promote_task:
   depends_on:
@@ -33,5 +32,4 @@ promote_task:
   env:
     ARTIFACTORY_PROMOTE_ACCESS_TOKEN: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promoter access_token]
     GITHUB_TOKEN: VAULT[development/github/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promotion token]
-    ARTIFACTS: FIXME # This was for Burgr links, is it still required?
-  script: cirrus_promote_...
+  script: cirrus_promote_maven
