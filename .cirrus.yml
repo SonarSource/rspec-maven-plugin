@@ -16,11 +16,13 @@ build_task:
   env:
     ARTIFACTORY_DEPLOY_REPO: sonarsource-public-qa
     ARTIFACTORY_DEPLOY_USERNAME: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-qa-deployer username]
-    ARTIFACTORY_DEPLOY_PASSWORD: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-qa-deployer access_token]
+#    ARTIFACTORY_DEPLOY_PASSWORD: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-qa-deployer access_token]
+    ARTIFACTORY_ACCESS_TOKEN: VAULT[development/artifactory/token/SonarSource-sonar-scanner-maven-private-reader access_token]
+
     DEPLOY_PULL_REQUEST: "true"
   build_script:
     - source cirrus-env BUILD
-    - regular_mvn_build_deploy_analyze -DartifactoryToken=$ARTIFACTORY_ACCESS_TOKEN
+    - regular_mvn_build_deploy_analyze
 
 promote_task:
   depends_on:
