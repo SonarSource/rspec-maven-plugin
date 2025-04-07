@@ -24,7 +24,7 @@ build_task:
     <<: *CONTAINER_DEFINITION
     cpu: 1
     memory: 1G
-
+  env:
     DEPLOY_PULL_REQUEST: "true"
   build_script:
     - source cirrus-env BUILD
