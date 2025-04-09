@@ -5,7 +5,6 @@ env:
   CIRRUS_VAULT_AUTH_PATH: jwt-cirrusci
   CIRRUS_VAULT_ROLE: cirrusci-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}
 
-  SONAR_HOST_URL: https://next.sonarqube.com/sonarqube
   ARTIFACTORY_URL: https://repox.jfrog.io/artifactory
   ARTIFACTORY_PRIVATE_USERNAME: vault-${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-private-reader
   ARTIFACTORY_PRIVATE_PASSWORD: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-private-reader access_token]
@@ -27,6 +26,8 @@ build_task:
     memory: 1G
   env:
     DEPLOY_PULL_REQUEST: "true"
+    SONAR_TOKEN: VAULT[development/kv/data/next data.token]
+    SONAR_HOST_URL: https://next.sonarqube.com/sonarqube
   build_script:
     - source cirrus-env BUILD
     - regular_mvn_build_deploy_analyze
