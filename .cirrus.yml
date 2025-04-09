@@ -46,10 +46,10 @@ promote_task:
   eks_container:
     <<: *CONTAINER_DEFINITION
     cpu: 2
-    memory: 4G
+    memory: 2G
   env:
     ARTIFACTORY_PROMOTE_ACCESS_TOKEN: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promoter access_token]
-    GITHUB_TOKEN: VAULT[development/github/token/licenses-ro token]
+    GITHUB_TOKEN: VAULT[development/github/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promotion token]
   maven_cache:
     folder: $CIRRUS_WORKING_DIR/.m2/repository
   script: cirrus_promote_maven
