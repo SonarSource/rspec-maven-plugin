@@ -21,8 +21,8 @@ eks_container_definition: &CONTAINER_DEFINITION
 build_task:
   eks_container:
     <<: *CONTAINER_DEFINITION
-    cpu: 4
-    memory: 40G
+    cpu: 2
+    memory: 2G
   env:
     DEPLOY_PULL_REQUEST: "true"
     SONAR_TOKEN: VAULT[development/kv/data/next data.token]
@@ -44,7 +44,7 @@ promote_task:
     memory: 1G
   env:
     ARTIFACTORY_PROMOTE_ACCESS_TOKEN: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promoter access_token]
-    GITHUB_TOKEN: VAULT[development/github/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promotion token]
+#    GITHUB_TOKEN: VAULT[development/github/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promotion token]
   maven_cache:
     folder: $CIRRUS_WORKING_DIR/.m2/repository
   script: cirrus_promote_maven
