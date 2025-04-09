@@ -30,7 +30,7 @@ build_task:
     SONAR_HOST_URL: https://next.sonarqube.com/sonarqube
   build_script:
     - source cirrus-env BUILD
-    - regular_mvn_build_deploy_analyze
+    - regular_mvn_build_deploy_analyze -X
 
 promote_task:
   depends_on:
