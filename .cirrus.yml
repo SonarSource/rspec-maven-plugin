@@ -21,8 +21,8 @@ eks_container_definition: &CONTAINER_DEFINITION
 build_task:
   eks_container:
     <<: *CONTAINER_DEFINITION
-    cpu: 1
-    memory: 1G
+    cpu: 4
+    memory: 40G
   env:
     DEPLOY_PULL_REQUEST: "true"
     SONAR_TOKEN: VAULT[development/kv/data/next data.token]
