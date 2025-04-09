@@ -1,5 +1,4 @@
 env:
-  CIRRUS_CLONE_DEPTH: "20"
   CIRRUS_SHELL: bash
   CIRRUS_VAULT_URL: https://vault.sonar.build:8200
   CIRRUS_VAULT_AUTH_PATH: jwt-cirrusci
@@ -28,9 +27,13 @@ build_task:
     DEPLOY_PULL_REQUEST: "true"
     SONAR_TOKEN: VAULT[development/kv/data/next data.token]
     SONAR_HOST_URL: https://next.sonarqube.com/sonarqube
+  maven_cache:
+    folder: ${CIRRUS_WORKING_DIR}/.m2/repository
   build_script:
     - source cirrus-env BUILD
     - regular_mvn_build_deploy_analyze -X
+  cleanup_before_cache_script:
+    - cleanup_maven_repository
 
 promote_task:
   depends_on:
@@ -42,4 +45,8 @@ promote_task:
   env:
     ARTIFACTORY_PROMOTE_ACCESS_TOKEN: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promoter access_token]
     GITHUB_TOKEN: VAULT[development/github/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promotion token]
+  maven_cache:
+    folder: $CIRRUS_WORKING_DIR/.m2/repository
   script: cirrus_promote_maven
+  cleanup_before_cache_script:
+    - cleanup_maven_repository
