@@ -28,14 +28,14 @@ build_task:
     cpu: 2
     memory: 2G
   env:
-    DEPLOY_PULL_REQUEST: "true"
+    DEPLOY_PULL_REQUEST: true
     SONAR_TOKEN: VAULT[development/kv/data/next data.token]
     SONAR_HOST_URL: https://next.sonarqube.com/sonarqube
   maven_cache:
     folder: ${CIRRUS_WORKING_DIR}/.m2/repository
   build_script:
     - source cirrus-env BUILD
-    - regular_mvn_build_deploy_analyze -X -DsonarSkip=true
+    - regular_mvn_build_deploy_analyze -X -Dsonar.skip=true
   cleanup_before_cache_script:
     - cleanup_maven_repository
 
