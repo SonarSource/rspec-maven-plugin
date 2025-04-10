@@ -18,11 +18,25 @@
     <properties>
         <revision>1.0.0-SNAPSHOT</revision>
         <maven-plugin-tools.version>3.15.1</maven-plugin-tools.version>
+        <mavenVersion>3.8.1</mavenVersion>
+        <gitRepositoryName>rspec-maven-plugin</gitRepositoryName>
         <jdk.min.version>17</jdk.min.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.exclusions>target/generated-sources/**/*</sonar.exclusions>
     </properties>
+
+    <scm>
+        <connection>scm:git:git@github.com:SonarSource/rspec-maven-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:SonarSource/rspec-maven-plugin.git</developerConnection>
+        <url>https://github.com/SonarSource/rspec-maven-plugin</url>
+        <tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+        <system>JIRA</system>
+        <url>https://jira.sonarsource.com/browse/PACKMP</url>
+    </issueManagement>
 
     <licenses>
         <license>
