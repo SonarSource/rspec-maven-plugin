@@ -16,10 +16,8 @@
  */
 package domain;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sonarsource.ruleapi.domain.Profile;
-import java.util.ArrayList;
 
 public class RuleDataGenerator {
 

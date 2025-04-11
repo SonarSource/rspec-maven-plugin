@@ -25,11 +25,11 @@ import java.io.IOException;
 import java.util.List;
 import org.apache.maven.plugin.logging.Log;
 
-public class RuleRepository implements domain.RuleRepository {
+public class ApplicationRuleRepository implements domain.RuleRepository {
 
   private final GitHubRuleMaker ruleMaker;
 
-  public RuleRepository(String url, String branchName, Log logger) throws IOException {
+  public ApplicationRuleRepository(String url, String branchName, Log logger) throws IOException {
     /**
      * Unfortunately, GitHubRuleMaker clones the repository during its creation.
      * Thus, we need to log as soon as we create it.

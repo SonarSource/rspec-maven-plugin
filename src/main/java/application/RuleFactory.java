@@ -23,13 +23,18 @@ import domain.Code;
 import domain.Parameter;
 import domain.Remediation;
 import domain.Rule;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RuleFactory {
-
+  private RuleFactory() {
+    // Private constructor to prevent instantiation
+  }
+  
   static Rule create(String languageKey, RuleFiles ruleFile) {
     var manifest = ruleFile.getMetadata();
     var name = ruleFile.getKey();
@@ -74,39 +79,7 @@ public class RuleFactory {
     }
 
     var rawScope = manifest.get("scope").getAsString();
-    var rawParameters = manifest.get("parameters");
-
-    var parameters = new ArrayList<Parameter>();
-
-    if (rawParameters != null) {
-      rawParameters
-        .getAsJsonArray()
-        .asList()
-        .forEach(rawValue -> {
-          // todo: add a factory
-          var value = rawValue.getAsJsonObject();
-
-          parameters.add(
-            new Parameter() {
-              public String name() {
-                return value.get("name").getAsString();
-              }
-
-              public String description() {
-                return value.get("description").getAsString();
-              }
-
-              public String type() {
-                return value.get("type").getAsString();
-              }
-
-              public String defaultValue() {
-                return value.get("defaultValue").getAsString();
-              }
-            }
-          );
-        });
-    }
+    var parameters = extractParameters(manifest.get("parameters"));
 
     return new Rule() {
       public String name() {
@@ -122,7 +95,7 @@ public class RuleFactory {
       }
 
       public String defaultSeverity() {
-        return manifest.get("defaultSeverity").getAsString().toUpperCase();
+        return manifest.get("defaultSeverity").getAsString().toUpperCase(Locale.ROOT);
       }
 
       public List<String> tags() {
@@ -132,7 +105,7 @@ public class RuleFactory {
       }
 
       public String scope() {
-        return rawScope.equals("Tests") ? "TEST" : rawScope.toUpperCase();
+        return rawScope.equals("Tests") ? "TEST" : rawScope.toUpperCase(Locale.ROOT);
       }
 
       public Remediation remediation() {
@@ -195,5 +168,38 @@ public class RuleFactory {
         return code;
       }
     };
+  }
+
+  private static List<Parameter> extractParameters(JsonElement rawParameters) {
+    var parameters = new ArrayList<Parameter>();
+    if (rawParameters != null) {
+      rawParameters
+        .getAsJsonArray()
+        .asList()
+        .forEach(rawValue -> {
+          var value = rawValue.getAsJsonObject();
+
+          parameters.add(
+            new Parameter() {
+              public String name() {
+                return value.get("name").getAsString();
+              }
+
+              public String description() {
+                return value.get("description").getAsString();
+              }
+
+              public String type() {
+                return value.get("type").getAsString();
+              }
+
+              public String defaultValue() {
+                return value.get("defaultValue").getAsString();
+              }
+            }
+          );
+        });
+    }
+    return parameters;
   }
 }

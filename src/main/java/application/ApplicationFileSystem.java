@@ -18,11 +18,11 @@ package application;
 
 import domain.Exception;
 
-public class FileSystem implements domain.FileSystem {
+public class ApplicationFileSystem implements domain.FileSystem {
 
   private final Host host;
 
-  public FileSystem(Host host) {
+  public ApplicationFileSystem(Host host) {
     this.host = host;
   }
 

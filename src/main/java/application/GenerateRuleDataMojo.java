@@ -16,8 +16,8 @@
  */
 package application;
 
-import domain.*;
 import domain.Exception;
+import domain.RuleDataGenerator;
 import infrastructure.JVMHost;
 import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -48,8 +48,8 @@ public class GenerateRuleDataMojo extends AbstractMojo {
     try {
       var generator = new RuleDataGenerator(
         logger::info,
-        new RuleRepository(this.vcsRepositoryUrl, this.vcsBranchName, logger),
-        new FileSystem(host)
+        new ApplicationRuleRepository(this.vcsRepositoryUrl, this.vcsBranchName, logger),
+        new ApplicationFileSystem(host)
       );
 
       generator.execute(this.ruleSubdirectory, this.targetDirectory);

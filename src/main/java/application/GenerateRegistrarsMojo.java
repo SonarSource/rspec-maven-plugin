@@ -16,8 +16,8 @@
  */
 package application;
 
-import domain.*;
 import domain.Exception;
+import domain.RegistrarsGenerator;
 import infrastructure.JVMHost;
 import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -46,11 +46,9 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
   @Parameter(required = true)
   private String packageName;
 
-  // todo: should probably not be required and default to languageKey
   @Parameter(required = true)
   private String compatibleLanguageKey;
 
-  // todo: should probably not be required and default to languageKey
   @Parameter(required = true)
   private String repositoryKey;
 
@@ -62,8 +60,8 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
     try {
       var generator = new RegistrarsGenerator(
         logger::info,
-        new RuleRepository(this.vcsRepositoryUrl, this.vcsBranchName, logger),
-        new FileSystem(host)
+        new ApplicationRuleRepository(this.vcsRepositoryUrl, this.vcsBranchName, logger),
+        new ApplicationFileSystem(host)
       );
 
       generator.execute(
