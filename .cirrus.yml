@@ -13,7 +13,7 @@ env:
   ARTIFACTORY_ACCESS_TOKEN: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-private-reader access_token]
 
 only_sonarsource_qa: &ONLY_SONARSOURCE_QA
-  only_if: $CIRRUS_USER_COLLABORATOR == 'true' && ($CIRRUS_PR != "" || $CIRRUS_BRANCH == "master" || $CIRRUS_BRANCH =~ "branch-.*")
+  only_if: $CIRRUS_USER_COLLABORATOR == 'true' && $CIRRUS_TAG == "" && ($CIRRUS_PR != "" || $CIRRUS_BRANCH == "master" || $CIRRUS_BRANCH =~ "branch-.*")
 
 
 eks_container_definition: &CONTAINER_DEFINITION
