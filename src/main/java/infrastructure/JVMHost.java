@@ -34,11 +34,10 @@ public class JVMHost implements Host {
 
       file.getParentFile().mkdirs();
 
-      var writer = new FileWriter(file);
-
-      writer.write(content);
-      writer.close();
-    } catch (IOException e) {
+		try (var writer = new FileWriter(file)) {
+			writer.write(content);
+		}
+	} catch (IOException e) {
       throw new application.IOException();
     }
   }

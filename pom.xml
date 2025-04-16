@@ -27,6 +27,7 @@
         <sonar.exclusions>target/generated-sources/**/*</sonar.exclusions>
         <sonar.organization>sonarsource</sonar.organization>
         <sonar.projectKey>SonarSource_rspec-maven-plugin</sonar.projectKey>
+        <sonar.coverage.exclusions>src/**/*</sonar.coverage.exclusions>
     </properties>
 
     <scm>
