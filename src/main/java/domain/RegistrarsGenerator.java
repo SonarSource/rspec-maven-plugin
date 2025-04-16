@@ -194,9 +194,7 @@ public class RegistrarsGenerator {
           .impacts()
           .entrySet()
           .stream()
-          .map(impact -> {
-            return String.format("\"%s\", \"%s\"", impact.getKey(), impact.getValue());
-          })
+          .map(impact -> String.format("\"%s\", \"%s\"", impact.getKey(), impact.getValue()))
           .collect(Collectors.joining(", "));
 
         codeCode = String.format(
@@ -329,11 +327,11 @@ public class RegistrarsGenerator {
 
     profileDefinitionBuilder.append(
       String.format(
-        "public class %s implements BuiltInQualityProfilesDefinition {\n",
+        "public class %s implements BuiltInQualityProfilesDefinition {%n",
         profileDefinitionClassName
       )
     );
-    profileDefinitionBuilder.append("public void define(Context context) {\n");
+    profileDefinitionBuilder.append("public void define(Context context) {%n");
 
     profileDefinitionBuilder.append(
       String.format(

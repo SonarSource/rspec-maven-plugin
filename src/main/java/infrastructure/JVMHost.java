@@ -18,8 +18,8 @@ package infrastructure;
 
 import application.Host;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class JVMHost implements Host {
@@ -30,15 +30,10 @@ public class JVMHost implements Host {
 
   public void write(String filePath, String content) throws application.IOException {
     try {
-      var file = new File(filePath);
-
-      file.getParentFile().mkdirs();
-
-      var writer = new FileWriter(file);
-
-      writer.write(content);
-      writer.close();
-    } catch (IOException e) {
+	  var file = new File(filePath);
+	  Files.createDirectories(file.getParentFile().toPath());
+	  Files.writeString(file.toPath(), content);
+	} catch (IOException e) {
       throw new application.IOException();
     }
   }
