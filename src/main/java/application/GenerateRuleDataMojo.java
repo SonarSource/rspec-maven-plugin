@@ -19,7 +19,6 @@ package application;
 import domain.Exception;
 import domain.RuleDataGenerator;
 import infrastructure.JVMHost;
-import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -50,7 +49,7 @@ public class GenerateRuleDataMojo extends AbstractMojo {
       );
 
       generator.execute(this.ruleSubdirectory, this.targetDirectory);
-    } catch (Exception | IOException e) {
+    } catch (Exception e) {
       throw new MojoExecutionException(e);
     }
   }

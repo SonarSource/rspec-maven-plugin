@@ -19,7 +19,6 @@ package application;
 import com.sonarsource.ruleapi.domain.RuleFiles;
 import com.sonarsource.ruleapi.github.GitHubRuleMaker;
 import domain.Rule;
-import java.io.IOException;
 import java.util.List;
 
 public class ApplicationRuleRepository implements domain.RuleRepository {
