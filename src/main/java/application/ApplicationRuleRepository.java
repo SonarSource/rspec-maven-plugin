@@ -26,7 +26,7 @@ public class ApplicationRuleRepository implements domain.RuleRepository {
 
   private final GitHubRuleMaker ruleMaker;
 
-  public ApplicationRuleRepository(String branchName) throws IOException {
+  public ApplicationRuleRepository(String branchName) {
     this.ruleMaker = GitHubRuleMaker.create(branchName);
   }
 
