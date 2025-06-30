@@ -34,9 +34,6 @@ public class GenerateRuleDataMojo extends AbstractMojo {
   @Parameter(required = true)
   private String targetDirectory;
 
-  @Parameter(defaultValue = "https://github.com/SonarSource/rspec.git")
-  private String vcsRepositoryUrl;
-
   @Parameter(defaultValue = "master")
   private String vcsBranchName;
 
@@ -48,7 +45,7 @@ public class GenerateRuleDataMojo extends AbstractMojo {
     try {
       var generator = new RuleDataGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsRepositoryUrl, this.vcsBranchName, logger),
+        new ApplicationRuleRepository(this.vcsBranchName),
         new ApplicationFileSystem(host)
       );
 
