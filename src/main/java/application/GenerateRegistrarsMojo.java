@@ -34,9 +34,6 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
   @Parameter(required = true)
   private String targetDirectory;
 
-  @Parameter(defaultValue = "https://github.com/SonarSource/rspec.git")
-  private String vcsRepositoryUrl;
-
   @Parameter(defaultValue = "master")
   private String vcsBranchName;
 
@@ -60,7 +57,7 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
     try {
       var generator = new RegistrarsGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsRepositoryUrl, this.vcsBranchName, logger),
+        new ApplicationRuleRepository(this.vcsBranchName),
         new ApplicationFileSystem(host)
       );
 
