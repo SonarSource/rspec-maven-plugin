@@ -19,7 +19,6 @@ package application;
 import domain.Exception;
 import domain.RuleDataGenerator;
 import infrastructure.JVMHost;
-import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -34,9 +33,6 @@ public class GenerateRuleDataMojo extends AbstractMojo {
   @Parameter(required = true)
   private String targetDirectory;
 
-  @Parameter(defaultValue = "https://github.com/SonarSource/rspec.git")
-  private String vcsRepositoryUrl;
-
   @Parameter(defaultValue = "master")
   private String vcsBranchName;
 
@@ -48,12 +44,12 @@ public class GenerateRuleDataMojo extends AbstractMojo {
     try {
       var generator = new RuleDataGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsRepositoryUrl, this.vcsBranchName, logger),
+        new ApplicationRuleRepository(this.vcsBranchName),
         new ApplicationFileSystem(host)
       );
 
       generator.execute(this.ruleSubdirectory, this.targetDirectory);
-    } catch (Exception | IOException e) {
+    } catch (Exception e) {
       throw new MojoExecutionException(e);
     }
   }

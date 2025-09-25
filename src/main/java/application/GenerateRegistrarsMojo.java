@@ -19,7 +19,6 @@ package application;
 import domain.Exception;
 import domain.RegistrarsGenerator;
 import infrastructure.JVMHost;
-import java.io.IOException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -33,9 +32,6 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
 
   @Parameter(required = true)
   private String targetDirectory;
-
-  @Parameter(defaultValue = "https://github.com/SonarSource/rspec.git")
-  private String vcsRepositoryUrl;
 
   @Parameter(defaultValue = "master")
   private String vcsBranchName;
@@ -60,7 +56,7 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
     try {
       var generator = new RegistrarsGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsRepositoryUrl, this.vcsBranchName, logger),
+        new ApplicationRuleRepository(this.vcsBranchName),
         new ApplicationFileSystem(host)
       );
 
@@ -72,7 +68,7 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
         this.targetDirectory,
         this.profileName
       );
-    } catch (Exception | IOException e) {
+    } catch (Exception e) {
       throw new MojoExecutionException(e);
     }
   }
