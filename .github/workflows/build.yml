@@ -30,8 +30,8 @@ jobs:
 
   promote:
     needs: [build]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/branch-'))
-    runs-on: github-ubuntu-latest-s
+    if: github.event_name == 'push'
+    runs-on: github-ubuntu-latest-m
     permissions:
       id-token: write
       contents: write
