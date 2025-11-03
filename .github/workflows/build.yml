@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: github-ubuntu-latest-s
+    runs-on: github-ubuntu-latest-m
     permissions:
       id-token: write
       contents: write
