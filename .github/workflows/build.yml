@@ -42,6 +42,12 @@ jobs:
 
   releasability:
     needs: [promote]
+    if: >-
+      github.event_name == 'push' && (
+        github.ref_name == github.event.repository.default_branch ||
+        startsWith(github.ref_name, 'branch-') ||
+        startsWith(github.ref_name, 'dogfood-')
+      )
     runs-on: github-ubuntu-latest-s
     name: Releasability
     permissions:
@@ -50,10 +56,6 @@ jobs:
       contents: read
     steps:
       - uses: SonarSource/gh-action_releasability/releasability-status@3.0.5
-        if: >-
-          github.ref_name == github.event.repository.default_branch ||
-          startsWith(github.ref_name, 'branch-') ||
-          startsWith(github.ref_name, 'dogfood-')
         with:
           optional_checks: "Jira"
         env:
