@@ -39,3 +39,22 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
       - uses: SonarSource/ci-github-actions/promote@v1
+
+  releasability:
+    needs: [promote]
+    runs-on: github-ubuntu-latest-s
+    name: Releasability
+    permissions:
+      id-token: write
+      statuses: write
+      contents: read
+    steps:
+      - uses: SonarSource/gh-action_releasability/releasability-status@3.0.5
+        if: >-
+          github.ref_name == github.event.repository.default_branch ||
+          startsWith(github.ref_name, 'branch-') ||
+          startsWith(github.ref_name, 'dogfood-')
+        with:
+          optional_checks: "Jira"
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
