@@ -25,8 +25,8 @@ public class ApplicationRuleRepository implements domain.RuleRepository {
 
   private final GitHubRuleMaker ruleMaker;
 
-  public ApplicationRuleRepository(String branchName) {
-    this.ruleMaker = GitHubRuleMaker.create(branchName);
+  public ApplicationRuleRepository(String branchName, String githubToken) {
+    this.ruleMaker = GitHubRuleMaker.create(branchName, githubToken);
   }
 
   public List<RuleFiles> getRuleManifestsByRuleSubdirectory(String ruleSubdirectory) {

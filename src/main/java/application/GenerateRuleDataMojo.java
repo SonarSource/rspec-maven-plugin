@@ -36,6 +36,13 @@ public class GenerateRuleDataMojo extends AbstractMojo {
   @Parameter(defaultValue = "master")
   private String vcsBranchName;
 
+  /**
+   * Optional GitHub token used to access the private RSPEC repository.
+   * When omitted, sonar-rule-api falls back to GITHUB_TOKEN and then to the gh auth token command.
+   */
+  @Parameter(property = "githubToken")
+  private String githubToken;
+
   @Override
   public void execute() throws MojoExecutionException {
     var host = new JVMHost();
@@ -44,7 +51,7 @@ public class GenerateRuleDataMojo extends AbstractMojo {
     try {
       var generator = new RuleDataGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsBranchName),
+        new ApplicationRuleRepository(this.vcsBranchName, this.githubToken),
         new ApplicationFileSystem(host)
       );
 
