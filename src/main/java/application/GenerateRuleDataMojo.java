@@ -43,6 +43,12 @@ public class GenerateRuleDataMojo extends AbstractMojo {
   @Parameter(property = "githubToken")
   private String githubToken;
 
+  /**
+   * Optional RSPEC commit SHA used to pin rule data generation.
+   */
+  @Parameter(property = "rspec.sha")
+  private String rspecSha;
+
   @Override
   public void execute() throws MojoExecutionException {
     var host = new JVMHost();
@@ -51,7 +57,7 @@ public class GenerateRuleDataMojo extends AbstractMojo {
     try {
       var generator = new RuleDataGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsBranchName, this.githubToken),
+        new ApplicationRuleRepository(this.vcsBranchName, this.githubToken, this.rspecSha),
         new ApplicationFileSystem(host)
       );
 

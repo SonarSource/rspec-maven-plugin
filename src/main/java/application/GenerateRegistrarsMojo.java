@@ -43,6 +43,12 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
   @Parameter(property = "githubToken")
   private String githubToken;
 
+  /**
+   * Optional RSPEC commit SHA used to pin registrar generation.
+   */
+  @Parameter(property = "rspec.sha")
+  private String rspecSha;
+
   @Parameter(defaultValue = "Sonar way")
   private String profileName;
 
@@ -63,7 +69,7 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
     try {
       var generator = new RegistrarsGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsBranchName, this.githubToken),
+        new ApplicationRuleRepository(this.vcsBranchName, this.githubToken, this.rspecSha),
         new ApplicationFileSystem(host)
       );
 
