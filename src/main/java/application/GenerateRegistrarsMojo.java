@@ -33,7 +33,10 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
   @Parameter(required = true)
   private String targetDirectory;
 
-  @Parameter(defaultValue = "master")
+  /**
+   * Optional RSPEC branch name. When omitted, the plugin uses master unless rspecSha is set.
+   */
+  @Parameter
   private String vcsBranchName;
 
   /**
@@ -42,6 +45,12 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
    */
   @Parameter(property = "githubToken")
   private String githubToken;
+
+  /**
+   * Optional RSPEC commit SHA used to pin registrar generation.
+   */
+  @Parameter(property = "rspec.sha")
+  private String rspecSha;
 
   @Parameter(defaultValue = "Sonar way")
   private String profileName;
@@ -63,7 +72,11 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
     try {
       var generator = new RegistrarsGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsBranchName, this.githubToken),
+        ApplicationRuleRepository.createFromConfiguration(
+          this.vcsBranchName,
+          this.githubToken,
+          this.rspecSha
+        ),
         new ApplicationFileSystem(host)
       );
 
@@ -75,6 +88,8 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
         this.targetDirectory,
         this.profileName
       );
+    } catch (IllegalArgumentException e) {
+      throw new MojoExecutionException(e.getMessage(), e);
     } catch (Exception e) {
       throw new MojoExecutionException(e);
     }

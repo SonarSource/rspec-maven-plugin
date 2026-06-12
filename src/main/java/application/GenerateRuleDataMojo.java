@@ -33,7 +33,10 @@ public class GenerateRuleDataMojo extends AbstractMojo {
   @Parameter(required = true)
   private String targetDirectory;
 
-  @Parameter(defaultValue = "master")
+  /**
+   * Optional RSPEC branch name. When omitted, the plugin uses master unless rspecSha is set.
+   */
+  @Parameter
   private String vcsBranchName;
 
   /**
@@ -43,6 +46,12 @@ public class GenerateRuleDataMojo extends AbstractMojo {
   @Parameter(property = "githubToken")
   private String githubToken;
 
+  /**
+   * Optional RSPEC commit SHA used to pin rule data generation.
+   */
+  @Parameter(property = "rspec.sha")
+  private String rspecSha;
+
   @Override
   public void execute() throws MojoExecutionException {
     var host = new JVMHost();
@@ -51,11 +60,17 @@ public class GenerateRuleDataMojo extends AbstractMojo {
     try {
       var generator = new RuleDataGenerator(
         logger::info,
-        new ApplicationRuleRepository(this.vcsBranchName, this.githubToken),
+        ApplicationRuleRepository.createFromConfiguration(
+          this.vcsBranchName,
+          this.githubToken,
+          this.rspecSha
+        ),
         new ApplicationFileSystem(host)
       );
 
       generator.execute(this.ruleSubdirectory, this.targetDirectory);
+    } catch (IllegalArgumentException e) {
+      throw new MojoExecutionException(e.getMessage(), e);
     } catch (Exception e) {
       throw new MojoExecutionException(e);
     }
