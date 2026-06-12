@@ -23,21 +23,50 @@ import java.util.List;
 
 public class ApplicationRuleRepository implements domain.RuleRepository {
 
+  private static final String DEFAULT_BRANCH_NAME = "master";
+  private static final String BRANCH_AND_SHA_ERROR_MESSAGE = "Use either vcsBranchName or rspecSha, not both.";
+
   private final GitHubRuleMaker ruleMaker;
 
-  public ApplicationRuleRepository(String branchName, String githubToken) {
-    this(branchName, githubToken, null);
+  public static ApplicationRuleRepository create(String branchName, String githubToken) {
+    var normalizedBranchName = normalize(branchName);
+    return new ApplicationRuleRepository(
+      GitHubRuleMaker.create(normalizedBranchName == null ? DEFAULT_BRANCH_NAME : normalizedBranchName, githubToken)
+    );
   }
 
-  public ApplicationRuleRepository(String branchName, String githubToken, String rspecSha) {
-    this.ruleMaker = createRuleMaker(branchName, githubToken, rspecSha);
-  }
-
-  private static GitHubRuleMaker createRuleMaker(String branchName, String githubToken, String rspecSha) {
-    if (rspecSha == null || rspecSha.isBlank()) {
-      return GitHubRuleMaker.create(branchName, githubToken);
+  public static ApplicationRuleRepository createAtRevision(String rspecSha, String githubToken) {
+    var normalizedRspecSha = normalize(rspecSha);
+    if (normalizedRspecSha == null) {
+      throw new IllegalArgumentException("rspecSha must not be blank.");
     }
-    return GitHubRuleMaker.createAtRevision(rspecSha.trim(), githubToken);
+    return new ApplicationRuleRepository(
+      GitHubRuleMaker.createAtRevision(normalizedRspecSha, githubToken)
+    );
+  }
+
+  static ApplicationRuleRepository createFromConfiguration(String branchName, String githubToken, String rspecSha) {
+    var normalizedBranchName = normalize(branchName);
+    var normalizedRspecSha = normalize(rspecSha);
+
+    if (normalizedRspecSha == null) {
+      return create(normalizedBranchName, githubToken);
+    }
+    if (normalizedBranchName != null) {
+      throw new IllegalArgumentException(BRANCH_AND_SHA_ERROR_MESSAGE);
+    }
+    return createAtRevision(normalizedRspecSha, githubToken);
+  }
+
+  private ApplicationRuleRepository(GitHubRuleMaker ruleMaker) {
+    this.ruleMaker = ruleMaker;
+  }
+
+  private static String normalize(String value) {
+    if (value == null || value.isBlank()) {
+      return null;
+    }
+    return value.trim();
   }
 
   public List<RuleFiles> getRuleManifestsByRuleSubdirectory(String ruleSubdirectory) {
