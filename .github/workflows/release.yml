@@ -1,11 +1,19 @@
 ---
 name: sonar-release
-# This workflow is triggered when publishing a new github release
+# This workflow is triggered manually with the full release version.
 # yamllint disable-line rule:truthy
 on:
-  release:
-    types:
-      - published
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Full version including build number, e.g. 1.4.0.120
+        required: true
+        type: string
+      dryRun:
+        description: Flag to enable the dry-run execution
+        default: false
+        required: false
+        type: boolean
 
 jobs:
   release:
@@ -14,5 +22,7 @@ jobs:
       contents: write
     uses: SonarSource/gh-action_release/.github/workflows/main.yaml@4417d62d874a2a2fcac6e4bc5bec9a7f93e18cd1 # 7.3.0
     with:
+      version: ${{ inputs.version }}
       publishToBinaries: true
       slackChannel: ask-squad-web
+      dryRun: ${{ inputs.dryRun == true }}
