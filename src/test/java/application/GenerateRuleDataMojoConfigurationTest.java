@@ -21,9 +21,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import domain.RuleDataTarget;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -55,13 +57,27 @@ class GenerateRuleDataMojoConfigurationTest {
   @Test
   void shouldRejectMixedTargetConfiguration() {
     var target = createTarget("javascript", "target/js");
+    var configuredTargets = List.of(target);
 
     var error = assertThrows(
       IllegalArgumentException.class,
-      () -> GenerateRuleDataMojoConfiguration.resolveTargets("javascript", "target/js", List.of(target))
+      () -> GenerateRuleDataMojoConfiguration.resolveTargets("javascript", "target/js", configuredTargets)
     );
 
     assertEquals("Use either targets or ruleSubdirectory/targetDirectory, not both.", error.getMessage());
+  }
+
+  @Test
+  void shouldRejectMixedVcsBranchAndRspecSha() throws Exception {
+    var mojo = new GenerateRuleDataMojo();
+    setField(mojo, "ruleSubdirectory", "javascript");
+    setField(mojo, "targetDirectory", "target/js");
+    setField(mojo, "vcsBranchName", "feature-rspec");
+    setField(mojo, "rspecSha", "abc123");
+
+    var error = assertThrows(MojoExecutionException.class, mojo::execute);
+
+    assertEquals("Use either vcsBranchName or rspecSha, not both.", error.getMessage());
   }
 
   @Test
@@ -102,5 +118,11 @@ class GenerateRuleDataMojoConfigurationTest {
     target.setRuleSubdirectory(ruleSubdirectory);
     target.setTargetDirectory(targetDirectory);
     return target;
+  }
+
+  private static void setField(Object target, String fieldName, Object value) throws Exception {
+    Field field = target.getClass().getDeclaredField(fieldName);
+    field.setAccessible(true);
+    field.set(target, value);
   }
 }

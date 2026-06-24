@@ -83,7 +83,7 @@ public class GenerateRuleDataMojo extends AbstractMojo {
       var generator = new RuleDataGenerator(
         logger::info,
         ApplicationRuleRepository.createFromConfiguration(
-          resolvedRspecSha == null ? this.vcsBranchName : null,
+          this.vcsBranchName,
           this.githubToken,
           resolvedRspecSha == null ? null : resolvedRspecSha.sha()
         ),
