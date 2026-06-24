@@ -75,7 +75,8 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
         ApplicationRuleRepository.createFromConfiguration(
           this.vcsBranchName,
           this.githubToken,
-          this.rspecSha
+          this.rspecSha,
+          logger::info
         ),
         new ApplicationFileSystem(host)
       );
