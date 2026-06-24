@@ -24,7 +24,6 @@ import java.util.List;
 public class ApplicationRuleRepository implements domain.RuleRepository {
 
   private static final String DEFAULT_BRANCH_NAME = "master";
-  private static final String BRANCH_AND_SHA_ERROR_MESSAGE = "Use either vcsBranchName or rspecSha, not both.";
 
   private final GitHubRuleMaker ruleMaker;
 
@@ -46,16 +45,10 @@ public class ApplicationRuleRepository implements domain.RuleRepository {
   }
 
   static ApplicationRuleRepository createFromConfiguration(String branchName, String githubToken, String rspecSha) {
-    var normalizedBranchName = normalize(branchName);
-    var normalizedRspecSha = normalize(rspecSha);
-
-    if (normalizedRspecSha == null) {
-      return create(normalizedBranchName, githubToken);
-    }
-    if (normalizedBranchName != null) {
-      throw new IllegalArgumentException(BRANCH_AND_SHA_ERROR_MESSAGE);
-    }
-    return createAtRevision(normalizedRspecSha, githubToken);
+    var repositoryConfiguration = resolveRepositoryConfiguration(branchName, rspecSha);
+    return repositoryConfiguration.rspecSha() == null
+      ? create(repositoryConfiguration.branchName(), githubToken)
+      : createAtRevision(repositoryConfiguration.rspecSha(), githubToken);
   }
 
   private ApplicationRuleRepository(GitHubRuleMaker ruleMaker) {
@@ -69,6 +62,19 @@ public class ApplicationRuleRepository implements domain.RuleRepository {
     return value.trim();
   }
 
+  static RepositoryConfiguration resolveRepositoryConfiguration(String branchName, String rspecSha) {
+    var normalizedBranchName = normalize(branchName);
+    var normalizedRspecSha = normalize(rspecSha);
+
+    if (normalizedRspecSha != null) {
+      return RepositoryConfiguration.forRevision(normalizedRspecSha);
+    }
+
+    return RepositoryConfiguration.forBranch(
+      normalizedBranchName == null ? DEFAULT_BRANCH_NAME : normalizedBranchName
+    );
+  }
+
   public List<RuleFiles> getRuleManifestsByRuleSubdirectory(String ruleSubdirectory) {
     return this.ruleMaker.getRulesByRuleSubdirectory(ruleSubdirectory);
   }
@@ -80,5 +86,15 @@ public class ApplicationRuleRepository implements domain.RuleRepository {
       .stream()
       .map(ruleManifest -> RuleFactory.create(languageKey, ruleManifest))
       .toList();
+  }
+
+  record RepositoryConfiguration(String branchName, String rspecSha) {
+    private static RepositoryConfiguration forBranch(String branchName) {
+      return new RepositoryConfiguration(branchName, null);
+    }
+
+    private static RepositoryConfiguration forRevision(String rspecSha) {
+      return new RepositoryConfiguration(null, rspecSha);
+    }
   }
 }
