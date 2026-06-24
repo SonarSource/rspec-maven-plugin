@@ -12,5 +12,4 @@ builds to use a previous RSPEC revision when the current RSPEC state is not desi
 ```
 
 It can also be provided from the command line with `-Drspec.sha=<commit-sha>`.
-Do not set `rspecSha` together with `vcsBranchName`: use `rspecSha` for a fixed revision or `vcsBranchName` for a
-branch.
+If both `rspecSha` and `vcsBranchName` are set, `rspecSha` takes precedence.
