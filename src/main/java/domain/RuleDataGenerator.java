@@ -31,6 +31,12 @@ public class RuleDataGenerator {
     this.fileSystem = fileSystem;
   }
 
+  public void execute(Iterable<RuleDataTarget> targets) throws Exception {
+    for (var target : targets) {
+      this.execute(target.ruleSubdirectory(), target.targetDirectory());
+    }
+  }
+
   public void execute(String ruleSubdirectory, String targetDirectory) throws Exception {
     logger.log(String.format("Generating %s rule data into %s", ruleSubdirectory, targetDirectory));
 
