@@ -34,7 +34,8 @@ public class GenerateRegistrarsMojo extends AbstractMojo {
   private String targetDirectory;
 
   /**
-   * Optional RSPEC branch name. When omitted, the plugin uses master unless rspecSha is set.
+   * Optional RSPEC branch name. When omitted, the plugin uses master unless rspecSha is set. If both
+   * are provided, rspecSha takes precedence.
    */
   @Parameter
   private String vcsBranchName;

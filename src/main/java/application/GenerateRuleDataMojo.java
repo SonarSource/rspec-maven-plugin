@@ -19,6 +19,7 @@ package application;
 import domain.Exception;
 import domain.RuleDataGenerator;
 import infrastructure.JVMHost;
+import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -27,14 +28,18 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "generate-rule-data")
 public class GenerateRuleDataMojo extends AbstractMojo {
 
-  @Parameter(required = true)
+  @Parameter
   private String ruleSubdirectory;
 
-  @Parameter(required = true)
+  @Parameter
   private String targetDirectory;
 
+  @Parameter
+  private List<RuleDataTargetConfiguration> targets;
+
   /**
-   * Optional RSPEC branch name. When omitted, the plugin uses master unless rspecSha is set.
+   * Optional RSPEC branch name. When omitted, the plugin uses master unless rspecSha is set. If both
+   * are provided, rspecSha takes precedence.
    */
   @Parameter
   private String vcsBranchName;
@@ -52,23 +57,41 @@ public class GenerateRuleDataMojo extends AbstractMojo {
   @Parameter(property = "rspec.sha")
   private String rspecSha;
 
+  /**
+   * Optional path to a file containing the RSPEC commit SHA used to pin rule data generation.
+   */
+  @Parameter
+  private String rspecShaFile;
+
   @Override
   public void execute() throws MojoExecutionException {
     var host = new JVMHost();
     var logger = this.getLog();
 
     try {
+      var resolvedTargets = GenerateRuleDataMojoConfiguration.resolveTargets(
+        this.ruleSubdirectory,
+        this.targetDirectory,
+        this.targets
+      );
+      var resolvedRspecSha = GenerateRuleDataMojoConfiguration.resolveRspecSha(this.rspecSha, this.rspecShaFile);
+      if (resolvedRspecSha != null) {
+        logger.info(
+          String.format("Using pinned RSPEC SHA %s from %s", resolvedRspecSha.sha(), resolvedRspecSha.sourceDescription())
+        );
+      }
+
       var generator = new RuleDataGenerator(
         logger::info,
         ApplicationRuleRepository.createFromConfiguration(
           this.vcsBranchName,
           this.githubToken,
-          this.rspecSha
+          resolvedRspecSha == null ? null : resolvedRspecSha.sha()
         ),
         new ApplicationFileSystem(host)
       );
 
-      generator.execute(this.ruleSubdirectory, this.targetDirectory);
+      generator.execute(resolvedTargets);
     } catch (IllegalArgumentException e) {
       throw new MojoExecutionException(e.getMessage(), e);
     } catch (Exception e) {
