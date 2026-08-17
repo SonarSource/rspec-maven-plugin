@@ -39,7 +39,7 @@ public interface Rule {
 
   List<String> compatibleLanguages();
 
-  List<String> qualityProfiles(String languageKey);
+  List<String> qualityProfiles(String compatibleLanguageKey);
 
   String status();
 
