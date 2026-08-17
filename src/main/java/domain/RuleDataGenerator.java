@@ -55,14 +55,16 @@ public class RuleDataGenerator {
       var manifestFile = this.fileSystem.resolve(targetDirectory, manifestFileName);
 
       var manifest = ruleManifest.getMetadata();
+      var defaultQualityProfiles = manifest.get("defaultQualityProfiles");
+      if (defaultQualityProfiles == null || !defaultQualityProfiles.isJsonObject()) {
+        var qualityProfiles = ruleManifest
+          .getQualityProfiles()
+          .stream()
+          .map(Profile::getName)
+          .toList();
 
-      var qualityProfiles = ruleManifest
-        .getQualityProfiles()
-        .stream()
-        .map(Profile::getName)
-        .toList();
-
-      manifest.add("defaultQualityProfiles", serializer.toJsonTree(qualityProfiles));
+        manifest.add("defaultQualityProfiles", serializer.toJsonTree(qualityProfiles));
+      }
       this.fileSystem.write(manifestFile, serializer.toJson(manifest));
     }
   }
