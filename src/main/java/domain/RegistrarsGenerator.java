@@ -347,7 +347,7 @@ public class RegistrarsGenerator {
     );
 
     for (var rule : rules) {
-      if (rule.qualityProfiles().contains(profileName)) {
+      if (rule.qualityProfiles(compatibleLanguageKey).contains(profileName)) {
         profileDefinitionBuilder.append(
           String.format("newProfile.activateRule(\"%s\", \"%s\");", repositoryKey, rule.name())
         );
