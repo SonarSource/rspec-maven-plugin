@@ -156,7 +156,21 @@ public class RuleFactory {
         return compatibleLanguages;
       }
 
-      public List<String> qualityProfiles() {
+      public List<String> qualityProfiles(String compatibleLanguageKey) {
+        var defaultQualityProfiles = manifest.get("defaultQualityProfiles");
+        if (defaultQualityProfiles != null && defaultQualityProfiles.isJsonObject()) {
+          var profilesForLanguage = defaultQualityProfiles
+            .getAsJsonObject()
+            .get(compatibleLanguageKey);
+          return profilesForLanguage == null
+            ? List.of()
+            : profilesForLanguage
+              .getAsJsonArray()
+              .asList()
+              .stream()
+              .map(JsonElement::getAsString)
+              .toList();
+        }
         return ruleFile.getQualityProfiles().stream().map(Profile::getName).toList();
       }
 

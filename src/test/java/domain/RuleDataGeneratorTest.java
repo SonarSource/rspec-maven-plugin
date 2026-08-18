@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.sonarsource.ruleapi.domain.Profile;
 import com.sonarsource.ruleapi.domain.RuleFiles;
 import java.util.ArrayList;
@@ -66,6 +67,43 @@ class RuleDataGeneratorTest {
     assertTrue(fileSystem.writes.get("/generated/javascript/S111.json").contains("\"Sonar way\""));
     assertTrue(fileSystem.writes.get("/generated/css/S222.json").contains("\"defaultQualityProfiles\""));
     assertTrue(fileSystem.writes.get("/generated/css/S222.json").contains("\"Sonar way\""));
+  }
+
+  @Test
+  void shouldPreserveDefaultQualityProfilesByLanguage() throws Exception {
+    var metadata = JsonParser
+      .parseString(
+        """
+        {
+          "defaultQualityProfiles": {
+            "js": [],
+            "ts": ["Sonar way", "Sonar agentic AI"]
+          }
+        }
+        """
+      )
+      .getAsJsonObject();
+    var ruleFiles = new RuleFiles(
+      "S111",
+      metadata,
+      "<p>js</p>",
+      Set.of(new Profile("Sonar way"), new Profile("Sonar agentic AI")),
+      Set.of()
+    );
+    var repository = new RecordingRuleRepository(Map.of("javascript", List.of(ruleFiles)));
+    var fileSystem = new RecordingFileSystem();
+    var generator = new RuleDataGenerator(message -> {}, repository, fileSystem);
+
+    generator.execute("javascript", "/generated/javascript");
+
+    var generatedMetadata = JsonParser
+      .parseString(fileSystem.writes.get("/generated/javascript/S111.json"))
+      .getAsJsonObject();
+    assertTrue(generatedMetadata.get("defaultQualityProfiles").isJsonObject());
+    assertEquals(
+      metadata.getAsJsonObject("defaultQualityProfiles"),
+      generatedMetadata.getAsJsonObject("defaultQualityProfiles")
+    );
   }
 
   private static RuleFiles createRuleFiles(String key, String description, Set<Profile> profiles) {
