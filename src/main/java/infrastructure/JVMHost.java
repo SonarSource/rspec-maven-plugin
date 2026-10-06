@@ -34,7 +34,7 @@ public class JVMHost implements Host {
 	  Files.createDirectories(file.getParentFile().toPath());
 	  Files.writeString(file.toPath(), content);
 	} catch (IOException e) {
-      throw new application.IOException();
+      // ignored
     }
   }
 }
