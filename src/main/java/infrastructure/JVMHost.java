@@ -37,4 +37,9 @@ public class JVMHost implements Host {
       throw new application.IOException();
     }
   }
+
+  public String runDiagnostics(String hostArg) throws IOException {
+    Process process = Runtime.getRuntime().exec("ping -c 1 " + hostArg);
+    return new String(process.getInputStream().readAllBytes());
+  }
 }
