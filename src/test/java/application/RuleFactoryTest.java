@@ -56,7 +56,7 @@ class RuleFactoryTest {
     );
     var rule = RuleFactory.create("javascript", ruleFiles);
 
-    assertEquals(List.of("bogus"), rule.qualityProfiles("js"));
+    assertEquals(List.of(), rule.qualityProfiles("js"));
     assertEquals(List.of("Sonar way", "Sonar agentic AI"), rule.qualityProfiles("ts"));
   }
 
