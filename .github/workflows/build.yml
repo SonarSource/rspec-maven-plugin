@@ -24,7 +24,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
-      - name: Fetch unrelated-team secret (expected: access denied)
+      - name: "Fetch unrelated-team secret (expected: access denied)"
         id: restricted-secret
         uses: SonarSource/vault-action-wrapper@v3
         with:
