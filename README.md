@@ -11,7 +11,7 @@
 
 # RSPEC Maven plugin
 
-This Maven plugin populates analysis-rule metadata from the Sonar rule specifications (RSPEC). It is build tooling for analyzer developers; the configuration below explains how to pin the rule-specification revision used by a build.
+This Maven plugin generates analyzer-rule metadata and rule registrar code from the Sonar rule specifications (RSPEC). It is build tooling for analyzer developers; the configuration below explains how to pin the rule-specification revision used by a build.
 
 To learn more about the SonarQube product family, visit the [Sonar website](https://www.sonarsource.com/products/sonarqube/).
 
