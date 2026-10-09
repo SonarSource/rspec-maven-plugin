@@ -107,7 +107,7 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
 
   notify-build-failure:
-    needs: [build, promote, releasability]
+    needs: [build, analysis, promote, releasability]
     if: >-
       always()
       && (github.ref_name == github.event.repository.default_branch || startsWith(github.ref_name, 'branch-') || startsWith(github.ref_name, 'dogfood-'))
